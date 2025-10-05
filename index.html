@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WORQ Bandar Utama - Site Visit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #ffffff;
+            color: #333;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation Dots */
+        .nav-dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .nav-dot:hover {
+            background: #b3d9f2;
+            transform: scale(1.2);
+        }
+
+        .nav-dot.active {
+            background: #b3d9f2;
+            border-color: #b3d9f2;
+            transform: scale(1.3);
+        }
+
+        /* Sections */
+        .section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #333;
+            letter-spacing: 2px;
+            z-index: 10;
+        }
+
+        .section-subtitle {
+            position: absolute;
+            top: 110px;
+            left: 60px;
+            font-size: 1rem;
+            font-weight: 300;
+            color: #666;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 200;
+            margin-bottom: 20px;
+            color: #333;
+            letter-spacing: 3px;
+        }
+
+        .hero-accent {
+            color: #b3d9f2;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 900px;
+            margin: 40px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Image Gallery */
+        .gallery-container {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 100px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #f9f9f9;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 20px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Single Image Display */
+        .single-image {
+            max-width: 1200px;
+            width: 100%;
+            margin: 100px auto 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .single-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator::after {
+            content: '↓';
+            font-size: 2rem;
+            color: #b3d9f2;
+            font-weight: 300;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 1.8rem;
+                left: 30px;
+                top: 40px;
+            }
+
+            .section-subtitle {
+                left: 30px;
+                top: 80px;
+                font-size: 0.9rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-dots {
+                right: 15px;
+            }
+
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .gallery-item img {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Dots -->
+    <div class="nav-dots">
+        <div class="nav-dot active" onclick="scrollToSection(0)"></div>
+        <div class="nav-dot" onclick="scrollToSection(1)"></div>
+        <div class="nav-dot" onclick="scrollToSection(2)"></div>
+        <div class="nav-dot" onclick="scrollToSection(3)"></div>
+        <div class="nav-dot" onclick="scrollToSection(4)"></div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" onclick="closeLightbox()">
+        <img src="" alt="">
+    </div>
+
+    <!-- Hero Section -->
+    <section class="section hero visible">
+        <div class="hero-content">
+            <h1><span class="hero-accent">WORQ</span> Bandar Utama</h1>
+            <div class="hero-image">
+                <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4015-1-scaled.jpg" alt="Main Entrance">
+            </div>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- Directory & Community Section -->
+    <section class="section">
+        <h2 class="section-title">Established Business Community</h2>
+        <div class="gallery-container">
+            <div class="gallery">
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4005-scaled.jpg" alt="Directory">
+                    <div class="gallery-label">Interactive Directory</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4012-1-scaled.jpg" alt="Community Wall">
+                    <div class="gallery-label">Community Wall - 40+ Tenants</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Private Office Spaces Section -->
+    <section class="section">
+        <h2 class="section-title">Private Office Solutions</h2>
+        <h3 class="section-subtitle">4-Seat & 6-Seat Configurations</h3>
+        <div class="gallery-container">
+            <div class="gallery">
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4010-scaled.jpg" alt="4-Seat External View">
+                    <div class="gallery-label">4-Seat Room - External View</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4009-scaled.jpg" alt="4-Seat Internal View">
+                    <div class="gallery-label">4-Seat Room - Internal View</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4008-scaled.jpg" alt="4-Seat Alternative View">
+                    <div class="gallery-label">4-Seat Room - Workspace View</div>
+                </div>
+                <!-- Removed: 4-Seat Room - Corner Office (placeholder) -->
+                <!-- Removed: 4-Seat Room - Detail View (placeholder) -->
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_3995-scaled.jpg" alt="6-Seat Room">
+                    <div class="gallery-label">6-Seat Room - Spacious Layout</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meeting Facilities Section -->
+    <section class="section">
+        <h2 class="section-title">Professional Meeting Rooms</h2>
+        <div class="gallery-container">
+            <div class="gallery">
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_3987-scaled.jpg" alt="Meeting Room Internal">
+                    <div class="gallery-label">Meeting Room - Premium Setup</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_3986-scaled.jpg" alt="Meeting Room External">
+                    <div class="gallery-label">Meeting Room - Glass Partition View</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Amenities Section -->
+    <section class="section">
+        <h2 class="section-title">Premium Amenities</h2>
+        <div class="gallery-container">
+            <div class="gallery">
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_3989-scaled.jpg" alt="Pantry 1">
+                    <div class="gallery-label">Modern Pantry & Hot Desk</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_3991-scaled.jpg" alt="Pantry 2">
+                    <div class="gallery-label">Pantry - Window View</div>
+                </div>
+                <!-- Removed: Collaborative Dining Area (placeholder) -->
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_3992-scaled.jpg" alt="Alfresco">
+                    <div class="gallery-label">Alfresco Terrace - City View</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_3994-scaled.jpg" alt="Games Room">
+                    <div class="gallery-label">Games Room</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4003-scaled.jpg" alt="Napping Pod">
+                    <div class="gallery-label">Napping Pod</div>
+                </div>
+                <div class="gallery-item" onclick="openLightbox(this)">
+                    <img src="https://cn.foodporn.zone/wp-content/uploads/2025/10/IMG_4004-scaled.jpg" alt="Baby Care Room">
+                    <div class="gallery-label">Baby Care Room</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Intersection Observer for fade-in animation
+        const sections = document.querySelectorAll('.section:not(.hero)');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Navigation dots
+        function scrollToSection(index) {
+            const sections = document.querySelectorAll('.section');
+            sections[index].scrollIntoView({ behavior: 'smooth' });
+            
+            // Update active dot
+            document.querySelectorAll('.nav-dot').forEach(dot => dot.classList.remove('active'));
+            document.querySelectorAll('.nav-dot')[index].classList.add('active');
+        }
+
+        // Update active dot on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const scrollPosition = window.pageYOffset;
+
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+
+                if (scrollPosition >= sectionTop - 200 && scrollPosition < sectionTop + sectionHeight - 200) {
+                    document.querySelectorAll('.nav-dot').forEach(dot => dot.classList.remove('active'));
+                    document.querySelectorAll('.nav-dot')[index].classList.add('active');
+                }
+            });
+        });
+
+        // Lightbox
+        function openLightbox(element) {
+            const lightbox = document.querySelector('.lightbox');
+            const lightboxImg = lightbox.querySelector('img');
+            const originalImg = element.querySelector('img');
+            
+            lightboxImg.src = originalImg.src;
+            lightboxImg.alt = originalImg.alt;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.querySelector('.lightbox').classList.remove('active');
+        }
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
